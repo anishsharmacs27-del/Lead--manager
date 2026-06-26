@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lead Manager — AI-Powered</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #f5f5f3;
+    --surface: #ffffff;
+    --surface-1: #f8f8f6;
+    --border: rgba(0,0,0,0.10);
+    --border-strong: rgba(0,0,0,0.18);
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --accent: #2a78d6;
+    --accent-bg: #e6f1fb;
+    --accent-text: #185fa5;
+    --success: #1baf7a;
+    --success-bg: #eaf3de;
+    --success-text: #3b6d11;
+    --warning: #eda100;
+    --warning-bg: #faeeda;
+    --warning-text: #854f0b;
+    --danger: #e34948;
+    --danger-bg: #fcebeb;
+    --danger-text: #a32d2d;
+    --pro-bg: #eeedfe;
+    --pro-text: #534ab7;
+    --pro-border: #afa9ec;
+    --radius: 8px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111110;
+      --surface: #1e1e1c;
+      --surface-1: #161615;
+      --border: rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.18);
+      --text-primary: #f5f5f3;
+      --text-secondary: #c3c2b7;
+      --text-muted: #898781;
+      --accent: #3987e5;
+      --accent-bg: #0c447c22;
+      --accent-text: #85b7eb;
+      --success: #199e70;
+      --success-bg: #17340a22;
+      --success-text: #97c459;
+      --warning: #c98500;
+      --warning-bg: #41240222;
+      --warning-text: #fac775;
+      --danger: #e66767;
+      --danger-bg: #50131322;
+      --danger-text: #f09595;
+      --pro-bg: #26215c22;
+      --pro-text: #afa9ec;
+      --pro-border: #534ab7;
+    }
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; }
+  .app { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; }
+  header h1 { font-size: 22px; font-weight: 500; }
+  header p { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .pill { font-size: 11px; background: var(--pro-bg); color: var(--pro-text); border: 0.5px solid var(--pro-border); padding: 4px 10px; border-radius: 99px; }
+  nav { display: flex; border-bottom: 0.5px solid var(--border); margin-bottom: 1.5rem; gap: 0; }
+  .tab { padding: 10px 20px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; border-bottom: 2px solid transparent; color: var(--text-secondary); background: none; transition: color 0.15s; display: flex; align-items: center; gap: 6px; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab:hover:not(.active) { color: var(--text-primary); }
+  .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+  .section-title { font-size: 17px; font-weight: 500; margin-bottom: 1rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-row.full { grid-template-columns: 1fr; }
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+  input, textarea, select {
+    width: 100%; padding: 9px 12px; border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius); font-size: 14px; background: var(--surface-1);
+    color: var(--text-primary); outline: none; font-family: inherit; transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+  textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+  .btn {
+    padding: 9px 18px; border-radius: var(--radius); font-size: 14px; font-weight: 500;
+    cursor: pointer; border: 0.5px solid var(--border-strong); background: var(--surface);
+    color: var(--text-primary); transition: background 0.15s; display: inline-flex; align-items: center; gap: 6px; font-family: inherit;
+  }
+  .btn:hover { background: var(--surface-1); }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.primary:hover { opacity: 0.9; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn.sm { padding: 5px 12px; font-size: 12px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .metric { background: var(--surface-1); border-radius: var(--radius); padding: 1rem; border: 0.5px solid var(--border); }
+  .metric-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .metric-value { font-size: 26px; font-weight: 500; }
+  .metric-value.accent { color: var(--accent); }
+  .metric-value.success { color: var(--success); }
+  .metric-value.warning { color: var(--warning); }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 500; }
+  .badge.sent { background: var(--accent-bg); color: var(--accent-text); }
+  .badge.opened { background: var(--success-bg); color: var(--success-text); }
+  .badge.clicked { background: var(--warning-bg); color: var(--warning-text); }
+  .badge.high { background: var(--danger-bg); color: var(--danger-text); }
+  .badge.medium { background: var(--warning-bg); color: var(--warning-text); }
+  .badge.low { background: var(--success-bg); color: var(--success-text); }
+  .badge.uncategorized { background: var(--surface-1); color: var(--text-muted); border: 0.5px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; font-weight: 500; color: var(--text-muted); border-bottom: 0.5px solid var(--border); white-space: nowrap; }
+  td { padding: 9px 12px; border-bottom: 0.5px solid var(--border); color: var(--text-secondary); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  .table-wrap { overflow-x: auto; }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text-muted); font-size: 14px; }
+  .toast {
+    position: fixed; bottom: 1.25rem; right: 1.25rem; background: var(--surface);
+    border: 0.5px solid var(--border-strong); border-radius: var(--radius);
+    padding: 12px 16px; font-size: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    z-index: 999; max-width: 300px; display: none; border-left: 3px solid var(--accent);
+  }
+  .toast.error { border-left-color: var(--danger); }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border-strong); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .progress-bar { height: 6px; background: var(--surface-1); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; border-radius: 99px; background: var(--accent); transition: width 0.5s; }
+  .email-preview { background: var(--surface-1); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem; font-size: 13px; line-height: 1.7; color: var(--text-secondary); white-space: pre-wrap; font-family: 'Courier New', monospace; }
+  .ai-box { background: var(--pro-bg); border: 0.5px solid var(--pro-border); border-radius: var(--radius); padding: 1rem; margin-top: 1rem; }
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  @media (max-width: 640px) { .chart-row { grid-template-columns: 1fr; } }
+  .chart-container { position: relative; height: 220px; }
+  .click-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .click-row:last-child { border-bottom: none; }
+  .tag { background: var(--accent-bg); color: var(--accent-text); font-size: 11px; padding: 2px 8px; border-radius: 99px; }
+  .api-notice { background: var(--warning-bg); border: 0.5px solid var(--warning); border-radius: var(--radius); padding: 10px 14px; font-size: 13px; color: var(--warning-text); margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 8px; }
+  .key-input-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+  .key-input-row input { font-family: monospace; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>Lead Manager</h1>
+      <p>Capture, track, and analyze leads with AI</p>
+    </div>
+    <span class="pill"><i class="ti ti-sparkles"></i> AI-powered</span>
+  </header>
+
+  <div class="api-notice" id="api-notice">
+    <i class="ti ti-key" style="margin-top:1px;flex-shrink:0"></i>
+    <div>
+      <strong>API key required for AI classification.</strong> Enter your Anthropic API key below to enable lead scoring. Leave blank to use the system without AI.
+      <div class="key-input-row" style="margin-top:8px">
+        <input type="password" id="api-key-input" placeholder="sk-ant-..." style="flex:1">
+        <button class="btn sm primary" onclick="saveApiKey()"><i class="ti ti-check"></i> Save key</button>
+      </div>
+      <div id="key-status" style="font-size:12px"></div>
+    </div>
+  </div>
+
+  <nav>
+    <button class="tab active" onclick="switchTab('form',this)"><i class="ti ti-user-plus"></i> Capture</button>
+    <button class="tab" onclick="switchTab('dashboard',this)"><i class="ti ti-chart-bar"></i> Dashboard</button>
+    <button class="tab" onclick="switchTab('leads',this)"><i class="ti ti-list"></i> Leads</button>
+    <button class="tab" onclick="switchTab('emails',this)"><i class="ti ti-mail"></i> Emails</button>
+  </nav>
+
+  <!-- FORM TAB -->
+  <div id="tab-form">
+    <div class="card">
+      <div class="section-title">Submit your details</div>
+      <div class="form-row">
+        <div class="field"><label>Full Name *</label><input id="f-name" type="text" placeholder="Rahul Sharma"></div>
+        <div class="field"><label>Email Address *</label><input id="f-email" type="email" placeholder="rahul@company.com"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Phone Number *</label><input id="f-phone" type="tel" placeholder="9876543210"></div>
+        <div class="field"><label>Company Name</label><input id="f-company" placeholder="ABC Pvt Ltd"></div>
+      </div>
+      <div class="form-row full">
+        <div class="field"><label>Requirement / Message *</label><textarea id="f-req" placeholder="e.g. I need a chatbot for my website, AI automation for sales..."></textarea></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px">
+        <button class="btn" onclick="clearForm()"><i class="ti ti-x"></i> Clear</button>
+        <button class="btn primary" id="submit-btn" onclick="submitLead()"><i class="ti ti-send"></i> Submit</button>
+      </div>
+    </div>
+
+    <div id="ai-section" style="display:none;margin-top:1rem">
+      <div class="card">
+        <div class="section-title" style="font-size:15px;display:flex;align-items:center;gap:6px"><i class="ti ti-brain"></i> AI Lead Analysis</div>
+        <div id="ai-content"></div>
+      </div>
+    </div>
+
+    <div id="email-section" style="display:none;margin-top:1rem">
+      <div class="card">
+        <div class="section-title" style="font-size:15px;display:flex;align-items:center;gap:6px"><i class="ti ti-mail-forward"></i> Email sent to lead</div>
+        <div id="email-preview" class="email-preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD TAB -->
+  <div id="tab-dashboard" style="display:none">
+    <div class="metric-grid" id="metrics-grid">
+      <div class="metric"><div class="metric-label">Total leads</div><div class="metric-value">0</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="card">
+        <div class="section-title" style="font-size:15px">Email performance</div>
+        <div class="chart-container"><canvas id="emailChart" role="img" aria-label="Email performance bar chart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="section-title" style="font-size:15px">Lead categories</div>
+        <div id="cat-chart-wrap" class="chart-container"><canvas id="catChart" role="img" aria-label="Lead categories chart"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <div class="section-title" style="margin:0">Link click activity</div>
+      </div>
+      <div id="click-list"></div>
+    </div>
+  </div>
+
+  <!-- LEADS TAB -->
+  <div id="tab-leads" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div class="section-title" style="margin:0">All leads</div>
+        <button class="btn sm" onclick="exportLeads()"><i class="ti ti-download"></i> Export CSV</button>
+      </div>
+      <div class="table-wrap" id="leads-container"></div>
+    </div>
+  </div>
+
+  <!-- EMAILS TAB -->
+  <div id="tab-emails" style="display:none">
+    <div class="card">
+      <div class="section-title">Email log</div>
+      <div class="table-wrap" id="email-log-container"></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const DB = { leads: [], emails: [], clicks: [], nextId: 1 };
+let emailChart = null, catChart = null;
+let ANTHROPIC_KEY = localStorage.getItem('lm_api_key') || '';
+
+if (ANTHROPIC_KEY) {
+  document.getElementById('api-key-input').value = ANTHROPIC_KEY;
+  document.getElementById('key-status').textContent = '✓ API key loaded from storage';
+  document.getElementById('key-status').style.color = 'var(--success-text)';
+}
+
+function saveApiKey() {
+  const k = document.getElementById('api-key-input').value.trim();
+  if (!k.startsWith('sk-ant-') && k !== '') {
+    document.getElementById('key-status').textContent = 'Key should start with sk-ant-';
+    document.getElementById('key-status').style.color = 'var(--danger-text)';
+    return;
+  }
+  ANTHROPIC_KEY = k;
+  if (k) localStorage.setItem('lm_api_key', k);
+  document.getElementById('key-status').textContent = k ? '✓ Key saved!' : 'Key cleared.';
+  document.getElementById('key-status').style.color = k ? 'var(--success-text)' : 'var(--text-muted)';
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['form', 'dashboard', 'leads', 'emails'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
+  });
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'leads') renderLeads();
+  if (name === 'emails') renderEmails();
+}
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  t.style.display = 'block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.display = 'none'; }, 3500);
+}
+
+function clearForm() {
+  ['f-name','f-email','f-phone','f-company','f-req'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('ai-section').style.display = 'none';
+  document.getElementById('email-section').style.display = 'none';
+}
+
+async function submitLead() {
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const company = document.getElementById('f-company').value.trim();
+  const req = document.getElementById('f-req').value.trim();
+
+  if (!name || !email || !phone || !req) { showToast('Please fill all required fields.', 'error'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('Please enter a valid email address.', 'error'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Processing...';
+
+  const lead = {
+    id: DB.nextId++, name, email, phone, company, requirement: req,
+    submittedAt: new Date().toISOString(),
+    aiCategory: '—', aiPriority: '—', aiScore: null, emailStatus: 'sent'
+  };
+  DB.leads.push(lead);
+
+  const trackId = 'trk_' + Math.random().toString(36).slice(2, 10);
+  const trackableLink = `${window.location.origin}${window.location.pathname}?track=${trackId}&lead=${lead.id}&redirect=https://example.com`;
+  DB.clicks.push({ trackId, leadId: lead.id, leadName: name, clicks: 0, createdAt: new Date().toISOString() });
+
+  const emailRecord = {
+    id: 'em_' + lead.id, leadId: lead.id, leadName: name, to: email,
+    sentAt: new Date().toISOString(), opened: false, openedAt: null, trackId
+  };
+  DB.emails.push(emailRecord);
+
+  const emailBody = `Hi ${name},\n\nThank you for reaching out to us!\n\nWe received your requirement:\n"${req}"\n\nOur team will review your request and get back to you within 24 hours.\n\nMeanwhile, learn more about our services:\n🔗 ${trackableLink}\n\nBest regards,\nTeam LeadManager\n—\nThis email was sent because you submitted the lead form.`;
+
+  document.getElementById('email-section').style.display = 'block';
+  document.getElementById('email-preview').textContent = emailBody;
+
+  // Simulate 70% open rate
+  setTimeout(() => {
+    if (Math.random() < 0.70) {
+      const em = DB.emails.find(e => e.id === 'em_' + lead.id);
+      if (em) { em.opened = true; em.openedAt = new Date().toISOString(); }
+      lead.emailStatus = 'opened';
+    }
+  }, 2500);
+
+  // AI Classification
+  document.getElementById('ai-section').style.display = 'block';
+  document.getElementById('ai-content').innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:var(--text-muted);font-size:13px;padding:4px 0"><span class="spinner"></span> Analyzing requirement with AI...</div>';
+
+  if (ANTHROPIC_KEY) {
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ANTHROPIC_KEY,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 500,
+          messages: [{ role: 'user', content: `You are a lead qualification AI. Analyze this business requirement and respond ONLY with a valid JSON object, no markdown, no preamble, no explanation:
+{"category":"string","priority":"High|Medium|Low","summary":"one sentence max","score":1,"tags":["tag1"]}
+
+Requirement: "${req}"
+Company: "${company || 'Not provided'}"` }]
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message);
+      const txt = data.content.map(i => i.text || '').join('');
+      let ai;
+      try { ai = JSON.parse(txt.replace(/```json|```/g, '').trim()); }
+      catch { ai = { category: 'General Inquiry', priority: 'Medium', summary: 'Lead requires manual review.', score: 5, tags: ['general'] }; }
+
+      lead.aiCategory = ai.category || 'General';
+      lead.aiPriority = ai.priority || 'Medium';
+      lead.aiScore = ai.score || 5;
+      lead.aiSummary = ai.summary || '';
+      lead.aiTags = ai.tags || [];
+
+      document.getElementById('ai-content').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div class="metric" style="padding:0.75rem">
+            <div class="metric-label">Category</div>
+            <div style="font-size:14px;font-weight:500;margin-top:2px">${ai.category}</div>
+          </div>
+          <div class="metric" style="padding:0.75rem">
+            <div class="metric-label">Priority</div>
+            <div style="margin-top:4px"><span class="badge ${(ai.priority||'medium').toLowerCase()}">${ai.priority}</span></div>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">${ai.summary}</p>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:12px;color:var(--text-muted);white-space:nowrap">Lead score</span>
+          <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${(ai.score||5)*10}%"></div></div>
+          <span style="font-size:13px;font-weight:500">${ai.score}/10</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">${(ai.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
+    } catch(e) {
+      lead.aiCategory = 'Uncategorized';
+      lead.aiPriority = 'Medium';
+      document.getElementById('ai-content').innerHTML = `<div style="color:var(--danger-text);font-size:13px"><i class="ti ti-alert-circle"></i> AI error: ${e.message}. Lead saved without classification.</div>`;
+    }
+  } else {
+    lead.aiCategory = 'Uncategorized';
+    lead.aiPriority = 'Medium';
+    document.getElementById('ai-content').innerHTML = '<div style="color:var(--text-muted);font-size:13px"><i class="ti ti-info-circle"></i> No API key set — lead saved without AI classification.</div>';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-send"></i> Submit';
+  showToast(`Lead from ${name} saved successfully!`);
+}
+
+function renderDashboard() {
+  const total = DB.leads.length;
+  const sent = DB.emails.length;
+  const opened = DB.emails.filter(e => e.opened).length;
+  const totalClicks = DB.clicks.reduce((a, c) => a + c.clicks, 0);
+  const openRate = sent ? Math.round(opened / sent * 100) : 0;
+  const clickRate = sent ? Math.round(totalClicks / sent * 100) : 0;
+
+  document.getElementById('metrics-grid').innerHTML = `
+    <div class="metric"><div class="metric-label">Total leads</div><div class="metric-value">${total}</div></div>
+    <div class="metric"><div class="metric-label">Emails sent</div><div class="metric-value">${sent}</div></div>
+    <div class="metric"><div class="metric-label">Emails opened</div><div class="metric-value success">${opened}</div></div>
+    <div class="metric"><div class="metric-label">Link clicks</div><div class="metric-value warning">${totalClicks}</div></div>
+    <div class="metric"><div class="metric-label">Open rate</div><div class="metric-value accent">${openRate}%</div></div>
+    <div class="metric"><div class="metric-label">Click rate</div><div class="metric-value">${clickRate}%</div></div>`;
+
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridColor = isDark ? '#2c2c2a' : '#e1e0d9';
+  const tickColor = isDark ? '#898781' : '#898781';
+
+  const ctx1 = document.getElementById('emailChart').getContext('2d');
+  if (emailChart) emailChart.destroy();
+  emailChart = new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: ['Sent', 'Opened', 'Clicked'],
+      datasets: [{ data: [sent, opened, totalClicks], backgroundColor: ['#2a78d6', '#1baf7a', '#eda100'], borderRadius: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1, color: tickColor }, grid: { color: gridColor } },
+        x: { ticks: { color: tickColor }, grid: { display: false } }
+      }
+    }
+  });
+
+  const cats = {};
+  DB.leads.forEach(l => { const c = l.aiCategory || 'Uncategorized'; cats[c] = (cats[c] || 0) + 1; });
+  const catLabels = Object.keys(cats);
+  const catData = Object.values(cats);
+  const colors = ['#2a78d6','#1baf7a','#eda100','#4a3aa7','#e34948','#008300','#eb6834','#e87ba4'];
+
+  const ctx2 = document.getElementById('catChart').getContext('2d');
+  if (catChart) catChart.destroy();
+  if (catLabels.length) {
+    catChart = new Chart(ctx2, {
+      type: 'doughnut',
+      data: { labels: catLabels, datasets: [{ data: catData, backgroundColor: colors.slice(0, catLabels.length), borderWidth: 2, borderColor: isDark ? '#1e1e1c' : '#fff' }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 }, color: tickColor } } } }
+    });
+  } else {
+    document.getElementById('cat-chart-wrap').innerHTML = '<div class="empty" style="height:100%;display:flex;align-items:center;justify-content:center">No leads yet</div>';
+  }
+
+  const cl = document.getElementById('click-list');
+  if (DB.clicks.length === 0) { cl.innerHTML = '<div class="empty">No link clicks tracked yet. Use the simulate button after submitting a lead.</div>'; return; }
+  cl.innerHTML = DB.clicks.map(c => `
+    <div class="click-row">
+      <div style="flex:1">
+        <span style="font-weight:500;color:var(--text-primary)">${c.leadName}</span>
+        <br><span style="font-size:11px;font-family:monospace;color:var(--text-muted)">${c.trackId}</span>
+      </div>
+      <div style="text-align:right;margin-right:12px">
+        <span style="font-weight:500;font-size:15px">${c.clicks}</span>
+        <span style="color:var(--text-muted);font-size:12px"> clicks</span>
+      </div>
+      <button class="btn sm" onclick="simulateClick('${c.trackId}')"><i class="ti ti-cursor-text"></i> Simulate click</button>
+    </div>`).join('');
+}
+
+function simulateClick(trackId) {
+  const entry = DB.clicks.find(c => c.trackId === trackId);
+  if (entry) entry.clicks++;
+  renderDashboard();
+  showToast('Link click tracked!');
+}
+
+function renderLeads() {
+  const c = document.getElementById('leads-container');
+  if (DB.leads.length === 0) { c.innerHTML = '<div class="empty">No leads yet. Submit the form to add one.</div>'; return; }
+  c.innerHTML = `<table>
+    <thead><tr>
+      <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Company</th>
+      <th>Requirement</th><th>Category</th><th>Priority</th><th>Score</th><th>Status</th><th>Time</th>
+    </tr></thead>
+    <tbody>${DB.leads.map(l => `<tr>
+      <td style="color:var(--text-muted)">${l.id}</td>
+      <td style="font-weight:500;color:var(--text-primary);white-space:nowrap">${l.name}</td>
+      <td>${l.email}</td>
+      <td>${l.phone}</td>
+      <td>${l.company || '—'}</td>
+      <td style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${l.requirement}">${l.requirement}</td>
+      <td><span class="badge uncategorized">${l.aiCategory}</span></td>
+      <td><span class="badge ${(l.aiPriority||'medium').toLowerCase()}">${l.aiPriority || '—'}</span></td>
+      <td>${l.aiScore ? l.aiScore + '/10' : '—'}</td>
+      <td><span class="badge ${l.emailStatus}">${l.emailStatus}</span></td>
+      <td style="font-size:11px;white-space:nowrap">${new Date(l.submittedAt).toLocaleString()}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+function renderEmails() {
+  const c = document.getElementById('email-log-container');
+  if (DB.emails.length === 0) { c.innerHTML = '<div class="empty">No emails sent yet.</div>'; return; }
+  c.innerHTML = `<table>
+    <thead><tr>
+      <th>To</th><th>Lead</th><th>Sent at</th><th>Opened</th><th>Opened at</th><th>Track ID</th>
+    </tr></thead>
+    <tbody>${DB.emails.map(e => `<tr>
+      <td>${e.to}</td>
+      <td style="font-weight:500;color:var(--text-primary)">${e.leadName}</td>
+      <td style="font-size:12px">${new Date(e.sentAt).toLocaleString()}</td>
+      <td><span class="badge ${e.opened ? 'opened' : 'sent'}">${e.opened ? 'Yes' : 'No'}</span></td>
+      <td style="font-size:12px">${e.openedAt ? new Date(e.openedAt).toLocaleString() : '—'}</td>
+      <td style="font-size:11px;font-family:monospace;color:var(--text-muted)">${e.trackId}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+function exportLeads() {
+  if (DB.leads.length === 0) { showToast('No leads to export', 'error'); return; }
+  const header = 'ID,Name,Email,Phone,Company,Requirement,Category,Priority,Score,Email Status,Submitted At';
+  const rows = DB.leads.map(l => [
+    l.id, `"${l.name}"`, l.email, l.phone, `"${l.company || ''}"`,
+    `"${l.requirement.replace(/"/g,'""')}"`, `"${l.aiCategory}"`,
+    l.aiPriority, l.aiScore || '', l.emailStatus, l.submittedAt
+  ].join(','));
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `leads-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('CSV exported!');
+}
+
+// Handle tracked link clicks in URL
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const tid = p.get('track');
+  if (tid) {
+    const entry = DB.clicks.find(c => c.trackId === tid);
+    if (entry) { entry.clicks++; showToast('Click tracked! Redirecting...'); }
+    const redir = p.get('redirect');
+    if (redir) setTimeout(() => { window.location.href = redir; }, 1000);
+  }
+})();
+</script>
+</body>
+</html>
